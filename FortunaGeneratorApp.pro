@@ -9,8 +9,18 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 
-#include(Fortuna/project/FortunaGenerator.pri)
-include(Fortuna/project/FortunaGeneratorPlugin.pri)
+#QTFORTUNAGEN_CONFIG += sources
+QTFORTUNAGEN_CONFIG += plugin
+
+contains(QTFORTUNAGEN_CONFIG, plugin) {
+    include(Fortuna/project/FortunaGeneratorPlugin.pri)
+    DEFINES += QTFORTUNAGENERATOR_PLUGIN
+}
+
+contains(QTFORTUNAGEN_CONFIG, sources) {
+    include(Fortuna/project/FortunaGenerator.pri)
+    DEFINES += QTFORTUANGENERATOR_SOURCES
+}
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
