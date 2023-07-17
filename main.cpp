@@ -10,9 +10,11 @@
 #elif defined (QTFORTUANGENERATOR_SOURCES)
 #include "generatormanager.h"
 #endif
+
 //#include "entropy/sources/qsensors/accelerometerentropysource.h"
 //#include "entropy/sources/freememoryentropysource.h"
 
+/// Fortuna generator demonstration
 int main(int argc, char *argv[])
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
@@ -21,13 +23,6 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-//    const QUrl url(QStringLiteral("qrc:/main.qml"));
-//    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-//        &app, [url](QObject *obj, const QUrl &objUrl) {
-//            if (!obj && url == objUrl)
-//                QCoreApplication::exit(-1);
-//        }, Qt::QueuedConnection);
-//    engine.load(url);
 
     qDebug() << "\n === \n Fortuna generator start \n === \n";
 
@@ -37,54 +32,38 @@ int main(int argc, char *argv[])
     QString pluginPath = GlobalConstants::PLUGIN_NAME;
     QPluginLoader pluginLoader(pluginPath);
     generator = QSharedPointer<GeneratorInterface>(qobject_cast<GeneratorInterface*>(pluginLoader.instance()));
-    if(!generator)
+    if (!generator)
     {
         // Произошла ошибка при загрузке плагина
         qDebug() << "Failed to load plugin:" << pluginLoader.errorString();
         return 0;
     }
-    else
-    {
-        qInfo() << "OK!!!!!!!!";
-        qInfo() << " VERY OK";
-//        pobj->registerFortunaGenerator();
-    }
 #elif defined (QTFORTUANGENERATOR_SOURCES) // QTFORTUNAGENERATOR_PLUGIN
     generator = QSharedPointer<GeneratorManager>(new GeneratorManager());
 #endif
-//        qmlRegisterType<GeneratorInterface>("CustomFortunaGenerator", 1, 0, "Fortuna");
-        //    genManager.seed({1, 2, 3, 4, 5});
 
-        //    /// Add sources
     generator->registerFortunaGenerator();
-    QSharedPointer<QAccelerometer> accelerometer(new QAccelerometer);
-    //                QSharedPointer<AccelerometerEntropySource> accelerometerSm\ource(new AccelerometerEntropySource());
-    //            auto source = genManager->createTestSource();
-    //            genManager->addSource(freeMemorySource);
-    generator->addSource(accelerometer);
+    /// Add sources
+//    QSharedPointer<QAccelerometer> accelerometer(new QAccelerometer);
+//    // QSharedPointer<AccelerometerEntropySource> accelerometerSm\ource(new AccelerometerEntropySource());
+//    // auto source = genManager->createTestSource();
+//    // genManager->addSource(source);
+//    generator->addSource(accelerometer);
+//    QThread::sleep(10);
 
-    //        QThread::sleep(4);
-    //                if (!genManager.isPoolsReady())
-    //                {
-    //                    qWarning() << "Failed to collect entropy";
-    //                    /// TODO
-    //                    // genManager.deinit();
-    //                }
-    //                else
-    //                {
-    if (generator->prepareEntropy())
-    {
-        qDebug() << "Generate...";
-        for (quint32 i = 1; i <= 10; ++i)
-        {
-            QVector<quint32> _result(i);
-            QThread::msleep(100);
-            generator->fillRange(_result);
-            qDebug() << _result;
-        }
-    }
-    else
-        qWarning() << "Generator not ready!";
+//    if (generator->prepareEntropy())
+//    {
+//        qDebug() << "Generate...";
+//        for (quint32 i = 1; i <= 10; ++i)
+//        {
+//            QVector<quint32> _result(i);
+//            QThread::msleep(100);
+//            generator->fillRange(_result);
+//            qDebug() << _result;
+//        }
+//    }
+//    else
+//        qWarning() << "Generator not ready!";
 
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -95,34 +74,6 @@ int main(int argc, char *argv[])
         }, Qt::QueuedConnection);
     engine.load(url);
 
-    /// Fortuna generator demonstration
-//    GeneratorManager genManager(100);
-//    genManager.seed({1, 2, 3, 4, 5});
-
-    /// Add sources
-//    QSharedPointer<FreeMemoryEntropySource> freeMemorySource(new FreeMemoryEntropySource());
-//    genManager.addSource(freeMemorySource);
-//    QSharedPointer<AccelerometerEntropySource> accelerometerSource(new AccelerometerEntropySource());
-//    genManager.addSource(accelerometerSource);
-
-//    QThread::sleep(2);
-//    if (!genManager.prepareEntropy())
-//    {
-//        qWarning() << "Failed to collect entropy";
-//        /// TODO
-//        // genManager.deinit();
-//    }
-//    else
-//    {
-//        qDebug() << "Generate...";
-//        for (quint32 i = 1; i <= 10; ++i)
-//        {
-//            QVector<quint32> _result(i);
-//            QThread::msleep(100);
-//            genManager.fillRange(_result);
-//            qDebug() << _result;
-//        }
-//    }
 
     return app.exec();
 }
