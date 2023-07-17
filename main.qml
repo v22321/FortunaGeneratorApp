@@ -69,11 +69,15 @@ Window {
                 contentView.sensors.push(lightSensor.type)
 
                 sensorStr = contentView.sensors.join(", ")
+
+                if (generator.prepareEntropy())
+                    console.log("Generator ready")
+                else
+                    console.warn("Generator not ready")
             }
 
             onCurrentItemChanged: {
-                console.warn("Current page changed")
-                console.warn(sensors)
+                console.log("Current page changed")
                 if (contentView.sensors.length == 0)
                     sensorStr = qsTr("Нет")
                 else
@@ -113,7 +117,7 @@ Window {
                                 }
 
                                 onClicked: {
-                                    console.warn("Choose sensors >>>")
+                                    console.log("Select sensors >>>")
                                     generator.clearSources()
                                     contentView.sensors = []
                                     contentView.push(sensorsPage)
@@ -238,8 +242,8 @@ Window {
                                 }
 
                                 onClicked: {
-                                    console.warn("Generate N digits >>>")
-                                    console.warn(selectRandomNumber.value)
+                                    console.log("Generate N digits >>>")
+                                    console.log(selectRandomNumber.value)
                                     contentView.randomNumbersCount = selectRandomNumber.value
                                     contentView.push(resultPage)
 //                                    console.log(generator.generateRange(selectRandomNumber.value))

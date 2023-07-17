@@ -53,6 +53,7 @@ int main(int argc, char *argv[])
 
 //    if (generator->prepareEntropy())
 //    {
+//        qDebug() << "Generator ready!";
 //        qDebug() << "Generate...";
 //        for (quint32 i = 1; i <= 10; ++i)
 //        {
