@@ -9,8 +9,8 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 
-#QTFORTUNAGEN_CONFIG += sources
-QTFORTUNAGEN_CONFIG += plugin
+QTFORTUNAGEN_CONFIG += sources
+#QTFORTUNAGEN_CONFIG += plugin
 
 contains(QTFORTUNAGEN_CONFIG, plugin) {
     include(Fortuna/project/FortunaGeneratorPlugin.pri)

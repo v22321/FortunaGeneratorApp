@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
+
 import CustomFortunaGenerator 1.0
 import QtSensors 5.15
 
@@ -11,9 +12,7 @@ Window {
 //    height: 480
     visible: true
 
-    Fortuna {
-        id: generator
-    }
+    Fortuna { id: generator }
 
     Rectangle {
         id: header
@@ -22,12 +21,12 @@ Window {
             left: parent.left
             right: parent.right
         }
-        height: 100
+        height: 80
         color: "lightblue"
 
         Label {
             anchors {
-                margins: 24
+                margins: 16
                 left: parent.left
                 verticalCenter: parent.verticalCenter
             }
@@ -52,10 +51,13 @@ Window {
             initialItem: mainPage
 
             property var sensors: []
-            property string sensorStr
+            property string sensorsStr
+            readonly property string emptySensors: qsTr("Нет")
+
             property int randomNumbersCount: 10
 
             Component.onCompleted: {
+                // Add sources
                 generator.addSource(accelerometer.type)
                 contentView.sensors.push(accelerometer.type)
 
@@ -68,7 +70,7 @@ Window {
                 generator.addSource(lightSensor.type)
                 contentView.sensors.push(lightSensor.type)
 
-                sensorStr = contentView.sensors.join(", ")
+                updateSensorsStr()
 
                 if (generator.prepareEntropy())
                     console.log("Generator ready")
@@ -77,11 +79,14 @@ Window {
             }
 
             onCurrentItemChanged: {
-                console.log("Current page changed")
-                if (contentView.sensors.length == 0)
-                    sensorStr = qsTr("Нет")
+                console.log("Current page: " + currentItem.objectName)
+            }
+
+            function updateSensorsStr() {
+                if (sensors.length == 0)
+                    sensorsStr = emptySensors
                 else
-                    sensorStr = contentView.sensors.join(", ")
+                    sensorsStr = sensors.join(", ")
             }
 
             Component {
@@ -128,7 +133,7 @@ Window {
                         ColumnLayout {
                             id: selectedSensors
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 100
+                            Layout.preferredHeight: 60
                             spacing: 4
 
                             Label {
@@ -136,23 +141,29 @@ Window {
                                 font.pixelSize: 16
                             }
                             Label {
-                                text: contentView.sensorStr
+                                text: contentView.sensorsStr
                                 font.pixelSize: 14
                             }
+                        }
+
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 1
+                            color: "lightblue"
                         }
 
                         Rectangle {
                             id: generateNumber
                             Layout.fillWidth: true
                             Layout.preferredHeight: 100
-                            enabled: sensorStr !== qsTr("Нет")
+                            enabled: sensorsStr !== emptySensors
                             border {
                                 color: "gray"
                                 width: 1
                             }
                             radius: 2
 
-                            property string currentNumber: "---"
+                            property string currentNumber: "-"
 
                             ItemDelegate {
                                 anchors.fill: parent
@@ -183,11 +194,17 @@ Window {
                             }
                         }
 
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 1
+                            color: "lightblue"
+                        }
+
                         Item {
                             id: selectRandomNumberCount
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 100
-                            enabled: sensorStr !== qsTr("Нет")
+                            Layout.preferredHeight: 60
+                            enabled: sensorsStr !== emptySensors
 
                             RowLayout {
                                 id: selectRandomNumberContent
@@ -202,6 +219,7 @@ Window {
                                     Layout.preferredWidth: 200
                                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                                     text: qsTr("Укажите количество чисел")
+                                    elide: Text.ElideRight
                                     font.pixelSize: 16
                                 }
 
@@ -219,7 +237,7 @@ Window {
                             id: generateNumbers
                             Layout.fillWidth: true
                             Layout.preferredHeight: 100
-                            enabled: sensorStr !== qsTr("Нет")
+                            enabled: sensorsStr !== emptySensors
                             border {
                                 color: "gray"
                                 width: 1
@@ -257,7 +275,6 @@ Window {
             Component {
                 id: sensorsPage
                 Item {
-
                     ColumnLayout {
                         anchors {
                             fill: parent
@@ -285,38 +302,11 @@ Window {
                             id: gyroCheck
                             text: "Gyroscope"
                             checked: true
-
-//                            onCheckedChanged: {
-//                                if (checked)
-//                                    contentView.sensors.push(gyroscope.type)
-//                                else
-//                                {
-//                                    var index = contentView.sensors.indexOf(gyroscope.type)
-//                                    if (index !== -1) {
-//                                        contentView.sensors.splice(index, 1)
-//                                    }
-//                                }
-//                                console.warn(contentView.sensors)
-//                            }
                         }
                         CheckBox {
                             id: lightCheck
                             text: "Light sensor"
                             checked: true
-
-//                            onCheckedChanged: {
-//                                if (checked)
-//                                    contentView.sensors.push(lightSensor.type)
-//                                else
-//                                {
-//                                    var index = contentView.sensors.indexOf(lightSensor.type)
-//                                    if (index !== -1) {
-//                                        contentView.sensors.splice(index, 1)
-//                                    }
-//                                }
-
-//                                console.warn(contentView.sensors)
-//                            }
                         }
 
                         Button {
@@ -343,6 +333,8 @@ Window {
                                     generator.addSource(lightSensor.type)
                                     contentView.sensors.push(lightSensor.type)
                                 }
+                                contentView.updateSensorsStr()
+
                                 contentView.pop()
                             }
                         }
