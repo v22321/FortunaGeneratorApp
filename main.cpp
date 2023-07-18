@@ -11,8 +11,9 @@
 #include "generatormanager.h"
 #endif
 
+#if defined (DESKTOP_SUPPORT)
 #include "entropy/sources/freememoryentropysource.h"
-
+#endif
 /// Fortuna generator demonstration
 int main(int argc, char *argv[])
 {
@@ -20,8 +21,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
     QGuiApplication app(argc, argv);
-
-    QQmlApplicationEngine engine;
 
     qDebug() << "\n === \n Fortuna generator start \n === \n";
 
@@ -43,39 +42,41 @@ int main(int argc, char *argv[])
 
     generator->registerFortunaGenerator();
     /// Fortuna generator demo
-//        QSharedPointer<QAccelerometer> accelerometer(new QAccelerometer);
-//        QSharedPointer<QCompass> accelerometer(new QCompass);
-//        QSharedPointer<QGyroscope> accelerometer(new QGyroscope);
-//        QSharedPointer<QLightSensor> accelerometer(new QLightSensor);
-//        generator->addSource(accelerometer);
+#if defined (DESKTOP_SUPPORT)
+    QSharedPointer<FreeMemoryEntropySource> source(new FreeMemoryEntropySource());
+    generator->addSource(source);
+    QThread::sleep(2);
 
-        QSharedPointer<FreeMemoryEntropySource> source(new FreeMemoryEntropySource());
-        generator->addSource(source);
-        QThread::sleep(2);
-
-        if (generator->prepareEntropy())
+    if (generator->prepareEntropy())
+    {
+        qDebug() << "Generate...";
+        for (quint32 i = 1; i <= 10; ++i)
         {
-            qDebug() << "Generate...";
-            for (quint32 i = 1; i <= 10; ++i)
-            {
-                QVector<quint32> _result(i);
-                QThread::msleep(100);
-                generator->fillRange(_result);
-                qDebug() << _result;
-            }
+            QVector<quint32> _result(i);
+            QThread::msleep(100);
+            generator->fillRange(_result);
+            qDebug() << _result;
         }
-        else
-            qWarning() << "Generator not ready!";
+    }
+    else
+        qWarning() << "Generator not ready!";
+#else // MOBILE_SUPPORT
 
+//    QSharedPointer<QAccelerometer> accelerometer(new QAccelerometer);
+//    QSharedPointer<QCompass> accelerometer(new QCompass);
+//    QSharedPointer<QGyroscope> accelerometer(new QGyroscope);
+//    QSharedPointer<QLightSensor> accelerometer(new QLightSensor);
+//    generator->addSource(accelerometer);
 
-//    const QUrl url(QStringLiteral("qrc:/main.qml"));
-//    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-//        &app, [url](QObject *obj, const QUrl &objUrl) {
-//            if (!obj && url == objUrl)
-//                QCoreApplication::exit(-1);
-//        }, Qt::QueuedConnection);
-//    engine.load(url);
-
+    QQmlApplicationEngine engine;
+    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+        &app, [url](QObject *obj, const QUrl &objUrl) {
+            if (!obj && url == objUrl)
+                QCoreApplication::exit(-1);
+        }, Qt::QueuedConnection);
+    engine.load(url);
+#endif
 
     return app.exec();
 }

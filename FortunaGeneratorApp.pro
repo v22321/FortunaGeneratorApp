@@ -22,6 +22,16 @@ contains(QTFORTUNAGEN_CONFIG, sources) {
     DEFINES += QTFORTUANGENERATOR_SOURCES
 }
 
+# Custom defines
+!android:!ios: {
+CONFIG += DESKTOP_SUPPORT
+DEFINES += DESKTOP_SUPPORT
+}
+else: {
+CONFIG += MOBILE_SUPPORT
+DEFINES += MOBILE_SUPPORT
+}
+
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
