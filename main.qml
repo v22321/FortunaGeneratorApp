@@ -35,10 +35,58 @@ Window {
         }
     }
 
-    Item {
-        id: content
+    ProgressBar {
+        id: progress
         anchors {
             top: header.bottom
+            left: parent.left
+            right: parent.right
+        }
+        width: parent.width
+        height: 10
+
+        contentItem: Rectangle {
+            anchors {
+                left: progress.left
+                bottom: progress.bottom
+            }
+            height: progress.height
+            width: progress.width * progress.value
+
+            color: progress.value === 0.0 ? "white" : "lightblue"
+            radius: 4
+        }
+
+
+        property real step: 0.01
+
+        function incrementValue() {
+            value += step
+            if (value > 0.99 || value < 0.01) {
+                step *= -1
+            }
+        }
+        function stop() {
+            value = 0
+            progressTimer.running = false
+        }
+
+        Timer {
+            id: progressTimer
+            interval: 10
+            repeat: true
+            running: true
+            onTriggered: {
+                progress.incrementValue()
+            }
+        }
+    }
+
+    Item {
+        id: content
+        enabled: false
+        anchors {
+            top: progress.bottom
             left: parent.left
             right: parent.right
             bottom: parent.bottom
@@ -72,8 +120,11 @@ Window {
 
                 updateSensorsStr()
 
-                if (generator.prepareEntropy())
+                if (generator.prepareEntropy()) {
                     console.log("Generator ready")
+                    content.enabled = true
+                    progress.stop()
+                }
                 else
                     console.warn("Generator not ready")
             }
