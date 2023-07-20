@@ -12,7 +12,15 @@ Window {
 //    height: 480
     visible: true
 
-    Fortuna { id: generator }
+    Fortuna {
+        id: generator
+        sources: [
+            AccelerometerEntropySource {},
+            CompassEntropySource {}
+            // GyroscopeEntropySource {},
+            // LightEntropySource {}
+        ]
+    }
 
     Rectangle {
         id: header
@@ -54,13 +62,12 @@ Window {
             width: progress.width * progress.value
 
             color: progress.value === 0.0 ? "white" : "lightblue"
-            radius: 4
+            radius: 2
         }
-
 
         property real step: 0.01
 
-        function incrementValue() {
+        function changeValue() {
             value += step
             if (value > 0.99 || value < 0.01) {
                 step *= -1
@@ -76,9 +83,7 @@ Window {
             interval: 10
             repeat: true
             running: true
-            onTriggered: {
-                progress.incrementValue()
-            }
+            onTriggered: progress.changeValue()
         }
     }
 
@@ -98,46 +103,24 @@ Window {
             anchors.fill: parent
             initialItem: mainPage
 
-            property var sensors: []
-            property string sensorsStr
+            property alias sensors: generator.sources
+            property string sensorsStr: generator.sourcesStr
             readonly property string emptySensors: qsTr("Нет")
 
             property int randomNumbersCount: 10
 
             Component.onCompleted: {
                 // Add sources
-                generator.addSource(accelerometer.type)
-                contentView.sensors.push(accelerometer.type)
-
-                generator.addSource(compass.type)
-                contentView.sensors.push(compass.type)
-
-                generator.addSource(gyroscope.type)
-                contentView.sensors.push(gyroscope.type)
-
-                generator.addSource(lightSensor.type)
-                contentView.sensors.push(lightSensor.type)
-
-                updateSensorsStr()
+                generator.sources.push(gyroscopeSource)
+                generator.sources.push(lightSensorSource)
 
                 if (generator.prepareEntropy()) {
                     console.log("Generator ready")
-                    content.enabled = true
                     progress.stop()
+                    content.enabled = true
                 }
                 else
                     console.warn("Generator not ready")
-            }
-
-            onCurrentItemChanged: {
-                console.log("Current page: " + currentItem.objectName)
-            }
-
-            function updateSensorsStr() {
-                if (sensors.length == 0)
-                    sensorsStr = emptySensors
-                else
-                    sensorsStr = sensors.join(", ")
             }
 
             Component {
@@ -175,8 +158,7 @@ Window {
                                 onClicked: {
                                     console.log("Select sensors >>>")
                                     generator.clearSources()
-                                    contentView.sensors = []
-                                    contentView.push(sensorsPage)
+                                    contentView.push(sensorsComponent)
                                 }
                             }
                         }
@@ -271,7 +253,7 @@ Window {
                                     Layout.alignment: Qt.AlignLeft | Qt.AlignVCenter
                                     text: qsTr("Укажите количество чисел")
                                     elide: Text.ElideRight
-                                    font.pixelSize: 16
+                                    font.pixelSize: 14
                                 }
 
                                 SpinBox {
@@ -324,8 +306,36 @@ Window {
             }
 
             Component {
-                id: sensorsPage
+                id: sensorsComponent
                 Item {
+                    id: sensorsPage
+
+                    function sensorsSelected() {
+                        if (accelCheck.checked)
+                        {
+                            generator.addSource(accelerometer.type)
+                        }
+                        if (compassCheck.checked)
+                        {
+                            generator.addSource(compass.type)
+                        }
+                        if (gyroCheck.checked)
+                        {
+                            generator.addSource(gyroscope.type)
+                        }
+                        if (lightCheck.checked)
+                        {
+                            generator.addSource(lightSensor.type)
+                        }
+
+                        contentView.pop()
+                    }
+
+                    Accelerometer { id: accelerometer }
+                    Compass { id: compass }
+                    Gyroscope { id: gyroscope }
+                    LightSensor { id: lightSensor }
+
                     ColumnLayout {
                         anchors {
                             fill: parent
@@ -363,31 +373,7 @@ Window {
                         Button {
                             text: qsTr("Назад")
 
-                            onClicked: {
-                                if (accelCheck.checked)
-                                {
-                                    generator.addSource(accelerometer.type)
-                                    contentView.sensors.push(accelerometer.type)
-                                }
-                                if (compassCheck.checked)
-                                {
-                                    generator.addSource(compass.type)
-                                    contentView.sensors.push(compass.type)
-                                }
-                                if (gyroCheck.checked)
-                                {
-                                    generator.addSource(gyroscope.type)
-                                    contentView.sensors.push(gyroscope.type)
-                                }
-                                if (lightCheck.checked)
-                                {
-                                    generator.addSource(lightSensor.type)
-                                    contentView.sensors.push(lightSensor.type)
-                                }
-                                contentView.updateSensorsStr()
-
-                                contentView.pop()
-                            }
+                            onClicked: sensorsPage.sensorsSelected()
                         }
                     }
                 }
@@ -443,9 +429,9 @@ Window {
             }
         }
 
-        Accelerometer { id: accelerometer }
-        Compass { id: compass }
-        Gyroscope { id: gyroscope }
-        LightSensor { id: lightSensor }
+//        AccelerometerEntropySource { id: accelerometerSource }
+//        CompassEntropySource { id: compassSource }
+        GyroscopeEntropySource { id: gyroscopeSource }
+        LightEntropySource { id: lightSensorSource }
     }
 }

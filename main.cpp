@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 
     qDebug() << "\n === \n Fortuna generator start \n === \n";
 
-    QSharedPointer<GeneratorInterface> generator;
+//    QSharedPointer<GeneratorInterface> generator;
 
 #if defined (QTFORTUNAGENERATOR_PLUGIN)
     QString pluginPath = GlobalConstants::PLUGIN_NAME;
@@ -37,10 +37,11 @@ int main(int argc, char *argv[])
         return 0;
     }
 #elif defined (QTFORTUANGENERATOR_SOURCES) // QTFORTUNAGENERATOR_PLUGIN
-    generator = QSharedPointer<GeneratorManager>(new GeneratorManager());
+//    generator = QSharedPointer<GeneratorManager>(new GeneratorManager());
 #endif
 
-    generator->registerFortunaGenerator();
+    GeneratorManager::registerFortunaGenerator();
+//    GeneratorManager::registerFortunaGenerator();
     /// Fortuna generator demo
 #if defined (DESKTOP_SUPPORT)
     QSharedPointer<FreeMemoryEntropySource> source(new FreeMemoryEntropySource());
