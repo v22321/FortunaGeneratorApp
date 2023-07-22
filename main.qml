@@ -3,7 +3,7 @@ import QtQuick.Layouts 1.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.15
 
-import CustomFortunaGenerator 1.0
+import FortunaGenerator 1.0
 import QtSensors 5.15
 
 Window {

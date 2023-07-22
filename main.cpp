@@ -3,9 +3,9 @@
 #include <QAccelerometer>
 #include <QPluginLoader>
 #include <QThread>
+#include <QQmlExtensionPlugin>
 
 #if defined (QTFORTUNAGENERATOR_PLUGIN)
-#include "generatorinterface.h"
 #include "globaldefs.h"
 #elif defined (QTFORTUANGENERATOR_SOURCES)
 #include "generatormanager.h"
@@ -24,21 +24,19 @@ int main(int argc, char *argv[])
 
     qDebug() << "\n === \n Fortuna generator start \n === \n";
 
-    QSharedPointer<GeneratorInterface> generator;
+    // QSharedPointer<GeneratorInterface> generator;
 
 #if defined (QTFORTUNAGENERATOR_PLUGIN)
-    QString pluginPath = GlobalConstants::PLUGIN_NAME;
-    QPluginLoader pluginLoader(pluginPath);
-    generator = QSharedPointer<GeneratorInterface>(qobject_cast<GeneratorInterface*>(pluginLoader.instance()));
-    if (!generator)
+    QPluginLoader pluginLoader(GlobalConstants::PLUGIN_FILE_NAME);
+    auto genPlugin = qobject_cast<QQmlExtensionPlugin*>(pluginLoader.instance());
+    if (!genPlugin)
     {
-        // Произошла ошибка при загрузке плагина
         qDebug() << "Failed to load plugin:" << pluginLoader.errorString();
         return 0;
     }
 #elif defined (QTFORTUANGENERATOR_SOURCES) // QTFORTUNAGENERATOR_PLUGIN
-    generator = QSharedPointer<GeneratorManager>(new GeneratorManager());
-    //    GeneratorManager::registerFortunaGenerator();
+    // generator = QSharedPointer<GeneratorManager>(new GeneratorManager());
+    GeneratorManager::registerFortunaGenerator();
 #endif
 
     /// Fortuna generator demo
