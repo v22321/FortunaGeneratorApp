@@ -1,4 +1,4 @@
-QT += quick
+QT += charts qml quick
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -9,8 +9,8 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 
-#QTFORTUNAGEN_CONFIG += sources
-QTFORTUNAGEN_CONFIG += plugin
+QTFORTUNAGEN_CONFIG += sources
+#QTFORTUNAGEN_CONFIG += plugin
 
 contains(QTFORTUNAGEN_CONFIG, plugin) {
     include(Fortuna/project/FortunaGeneratorPlugin.pri)
