@@ -9,8 +9,6 @@ import QtCharts 2.15
 
 Window {
     id: win
-//    width: 640
-//    height: 480
     visible: true
 
     Fortuna {
@@ -295,7 +293,7 @@ Window {
                                 }
 
                                 onClicked: {
-                                    console.log("Generate N digits >>>")
+                                    console.log("Generate N digits")
                                     console.log(selectRandomNumber.value)
                                     contentView.randomNumbersCount = selectRandomNumber.value
                                     contentView.push(resultPage)
@@ -448,24 +446,14 @@ Window {
                         property var generatedNumbersList: []
 
                         Component.onCompleted: {
-//                            updateNumbers()
-
-                            console.warn("Start generate >>>>")
-                            for (var i = 11; i < 100; ++i)
-                            {
-                                cats.push(i.toString())
-//                                vals.push(i)
-                            }
-                            axis.categories = cats
-//                            axis.categories = cats
+                            console.warn("Start generate")
                             bar.values = generator.generateRange(100)
                             diabChartBig.update()
                             console.warn(bar.values)
-                            console.warn("Start generate <<<<")
                         }
 
                         function updateNumbers() {
-                            console.log("Generate result >>>>>>>>>>>>>>>>>>")
+                            console.log("Generate result”)
                             generatedNumbersList = generator.generateRange(contentView.randomNumbersCount)
                             generatedNumbers = generatedNumbersList.join("\n");
                         }
@@ -494,100 +482,16 @@ Window {
                             }
                         }
 
-//                        ChartView{
-//                            id: diabChartBig
-//                            title: "Overview"
-//                            Layout.fillWidth: true
-//                            Layout.preferredHeight: 400
-//                            antialiasing: true
-
-//                            LineSeries {
-//                                id: lineseries
-////                                axisX: vlaueAxisX
-////                                axisY: valueAxisY
-//                                name: "LineSeries"
-//                                XYPoint { id: zero; x: 0; y: 0}
-//                                XYPoint { id: first; x: 100; y: 5000000000 }
-////                                XYPoint { x: 9; y: 80 }
-////                                XYPoint { x: 12; y: 30 }
-////                                XYPoint { x: 14; y: 150 }
-////                                XYPoint { x: 18; y: 40 }
-////                                XYPoint { x: 21; y: 280 }
-////                                XYPoint { id: last; x: 23.5; y: 200 }
-////                                XYPoint { id: twentyfour; x: 24; y: 192.6}
-//                            }
-
-//                            Component.onCompleted: {
-//                                var series = diabChartBig.createSeries(ChartView.SeriesTypeLine, "Test", diabChartBig.axisX(lineseries), diabChartBig.axisY(lineseries));
-//                                series.append(0,50);
-//                                series.append(4,130);
-
-////                                series = diabetesView.setLineSeries();
-
-//                                diabChartBig.update();
-
-//                            }
-//                        }
-
-//                        ChartView {
-//                            title: "Scatter Chart"
-//                            Layout.fillWidth: true
-//                            Layout.preferredHeight: 400
-//                            antialiasing: true
-
-//                            LineSeries {
-//                                style: LineSeries.NoLine  // Устанавливаем стиль линии None
-//                                markerSize: 10  // Устанавливаем размер маркера (размер точки)
-//                                markerShape: AbstractSeries.MarkerCircle  // Устанавливаем форму маркера (круг)
-////                                XYPoint { x: "x"; y: "y"
-//                                id: lineSeries
-//                                        axisX: axisX
-//                                        axisY: axisY
-//                                        useOpenGL: true
-//                            }
-
-//                            Component.onCompleted: {
-
-//                            }
-//                        }
-                        //![1]
-//                        ChartView {
-//                            id: chartView
-//                            title: "Driver Speeds, lap 1"
-//                            Layout.fillWidth: true
-//                            Layout.preferredHeight: 400
-////                            anchors.fill: parent
-//                            legend.alignment: Qt.AlignTop
-//                            animationOptions: ChartView.SeriesAnimations
-//                            antialiasing: true
-
-//                            theme: ChartView.ChartThemeBrownSand
-
-//                                 PieSeries {
-//                                     id: pieSeries
-//                                     PieSlice { label: "eaten"; value: 94.9 }
-//                                     PieSlice { label: "not yet eaten"; value: 5.1 }
-//                                 }
-//                        }
-                        //![1]
 
                         Button {
                             text: qsTr("Назад")
                             // onClicked: contentView.pop()
                             onClicked: {
                                 var cats = []
-                                console.warn("Start generate >>>>")
-                                for (var i = 11; i < 100; ++i)
-                                {
-                                    cats.push(i.toString())
-    //                                vals.push(i)
-                                }
-                                axis.categories = cats
-    //                            axis.categories = cats
+                                console.warn("Start generate")
                                 bar.values = generator.generateRange(100)
                                 diabChartBig.update()
                                 console.warn(bar.values)
-                                console.warn("Start generate <<<<")
 
                             }
                         }
